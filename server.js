@@ -12,7 +12,7 @@ server.use(express.json());
 
 const PORT = process.env.PORT;
 
-mongoose.connect('mongodb://localhost:27017/best-book', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(`${process.env.MONGO_DB_URL}`, { useNewUrlParser: true, useUnifiedTopology: true });
 
 
 const BookSchema = new mongoose.Schema({
