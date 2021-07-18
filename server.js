@@ -12,7 +12,7 @@ server.use(express.json());
 
 const PORT = process.env.PORT;
 
-mongoose.connect('mongodb://localhost:27017/best-book', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(`${process.env.MONGO_DB_URL}`, { useNewUrlParser: true, useUnifiedTopology: true });
 
 
 const BookSchema = new mongoose.Schema({
@@ -72,11 +72,15 @@ server.post('/addbook', addingBookToDB);
 
 server.delete('/deletebook/:bookIndex', deleteBook);
 
+server.put('/update/:bookIndex', updateBook);
+
+
 function getUserBook(req, res) {
     let userEmail = req.query.userEmail;
 
     userModel.find({ email: userEmail }, function (error, userData) {
         if (error) {
+            console.log('test :',res.status)
             res.send('did not work')
         } else {
             res.send(userData[0].books)
@@ -130,14 +134,34 @@ function deleteBook(req, res) {
 
             res.send(userData[0].books);
 
-
-
-
-
-
         }
     })
 
+
+}
+
+
+function updateBook(req, res) {
+    const { email , name , description , status , img  } = req.body;
+
+    let index = req.params.bookIndex;
+
+    userModel.findOne({email:email},(error,userData)=>{
+        if(error) res.send('error in finding the data')
+        else {
+            userData.books.splice(index,1,{
+                name : name,
+                description : description,
+                status : status,
+                img : img,
+            })
+            userData.save();
+            res.send(userData.books)
+            
+        }
+    })
+
+  
 
 
 }
