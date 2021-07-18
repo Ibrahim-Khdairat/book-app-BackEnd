@@ -80,8 +80,8 @@ function getUserBook(req, res) {
 
     userModel.find({ email: userEmail }, function (error, userData) {
         if (error) {
-            console.log('test :',res.status)
-            res.send('did not work')
+            console.log('test :',res.status   )
+            res.send('did not work ',error)
         } else {
             res.send(userData[0].books)
         }
